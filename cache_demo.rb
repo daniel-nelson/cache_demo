@@ -22,9 +22,9 @@ get "/:cache_visibility/must_revalidate/:validity" do
   headers('Date' => CGI::rfc1123_date(date))
   headers('Last-Modified' => last_modified_string)
   if params[:validity] == 'invalid'
-    headers('ETag' => "\"Time.now.to_i.to_s\"")
+    etag(Time.now.to_i.to_s)
   elsif params[:validity] == 'valid'
-    headers('ETag' => '"e9db93d4fb9cb8ba9f5a47f316edeec4"')
+    etag('e9db93d4fb9cb8ba9f5a47f316edeec4')
   end
   headers('Content-Type' => 'text/plain')
   params[:data]
