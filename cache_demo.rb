@@ -3,10 +3,31 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'rubygems'
 require 'bundler'
 Bundler.require
+require 'cgi'
+require 'pry'
+require 'pry-remote'
 
 set :views, File.join(File.dirname(__FILE__), 'views')
 
-get "/" do
+
+
+get "/:cache_visibility/must_revalidate/:validity" do
+  last_modified_string = 'Wed, 16 Jan 2013 20:52:56 GMT'
+  last_modified = Time.rfc2822(last_modified_string)
+  date = Time.now
+  age = date.to_i - last_modified.to_i
+
+  cache_control params[:cache_visibility], :must_revalidate, :max_age => params[:max]
+  headers('Age' => age.to_s)
+  headers('Date' => CGI::rfc1123_date(date))
+  headers('Last-Modified' => last_modified_string)
+  if params[:validity] == 'invalid'
+    headers('ETag' => "\"Time.now.to_i.to_s\"")
+  elsif params[:validity] == 'valid'
+    headers('ETag' => '"e9db93d4fb9cb8ba9f5a47f316edeec4"')
+  end
+  headers('Content-Type' => 'text/plain')
+  params[:data]
 end
 
 get "/docs" do

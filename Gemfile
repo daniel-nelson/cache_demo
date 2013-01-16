@@ -4,6 +4,6 @@ gem 'sinatra'
 gem 'thin'
 
 group :development, :test do
-  gem 'heroku'
   gem 'pry'
+  gem 'pry-remote'
 end
