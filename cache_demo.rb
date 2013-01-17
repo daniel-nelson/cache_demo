@@ -11,7 +11,7 @@ set :views, File.join(File.dirname(__FILE__), 'views')
 
 
 
-get "/:cache_visibility/:revalidate/:last_modified/:etag" do
+get "/:revalidation/:last_modified/:etag" do
   now = Time.now
 
   case params[:last_modified]
@@ -29,10 +29,10 @@ get "/:cache_visibility/:revalidate/:last_modified/:etag" do
     etag(now.to_i.to_s)
   end
 
-  if params[:revalidate] == 'must_revalidate'
-    cache_control params[:cache_visibility], :must_revalidate, :max_age => params[:max]
-  elsif params[:revalidate] == 'no_revalidate'
-    cache_control params[:cache_visibility], :max_age => params[:max]
+  if params[:revalidation] == 'no_revalidation'
+    cache_control :public, :max_age => params[:max]
+  else
+    cache_control :public, params[:revalidation], :max_age => params[:max]
   end
 
   if params[:age]
@@ -45,8 +45,14 @@ get "/:cache_visibility/:revalidate/:last_modified/:etag" do
   erb :demo
 end
 
-get "/docs/:cache_visibility" do
-  cache_control params[:cache_visibility], :must_revalidate, :max_age => 0
+get "/docs/:revalidation" do
+
+  if params[:revalidation] == 'no_revalidation'
+    cache_control :private, :max_age => params[:max]
+  else
+    cache_control :private, params[:revalidation], :max_age => params[:max]
+  end
+
   # cache_control :no_cache
   # cache_control :no_store
   headers('Vary' => 'Accept')
