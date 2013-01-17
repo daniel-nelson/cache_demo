@@ -11,8 +11,15 @@ set :views, File.join(File.dirname(__FILE__), 'views')
 
 
 
-get "/:cache_visibility/:revalidate/:etag" do
-  last_modified(Time.rfc2822('Wed, 16 Jan 2013 20:52:56 GMT'))
+get "/:cache_visibility/:revalidate/:last_modified/:etag" do
+  if params[:last_modified] == 'check_last_modified'
+    last_modified(Time.rfc2822('Wed, 16 Jan 2013 20:52:56 GMT'))
+  end
+
+  if params[:age]
+    headers('Age' => params[:age])
+    headers('Date' => CGI::rfc1123_date(Time.now))
+  end
 
   if params[:revalidate] == 'must_revalidate'
     cache_control params[:cache_visibility], :must_revalidate, :max_age => params[:max]
