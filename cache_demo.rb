@@ -11,7 +11,7 @@ set :views, File.join(File.dirname(__FILE__), 'views')
 
 
 
-get "/:revalidation/:last_modified/:etag" do
+get "/:revalidation/:last_modified/:etag/:max" do
   now = Time.now
 
   case params[:last_modified]
@@ -35,10 +35,8 @@ get "/:revalidation/:last_modified/:etag" do
     cache_control :public, params[:revalidation], :max_age => params[:max]
   end
 
-  if params[:age]
-    headers('Age' => params[:age])
-    headers('Date' => CGI::rfc1123_date(now))
-  end
+  headers('Age' => '8')
+  headers('Date' => CGI::rfc1123_date(now))
 
   @request_url = request.path
   @request_url << '?' + request.query_string unless request.query_string.empty?
