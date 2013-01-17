@@ -13,17 +13,17 @@
 function makeHttpObject() {
   try {return new XMLHttpRequest();}
   catch (error) {}
-  try {return new ActiveXObject("Msxml2.XMLHTTP");}
+  try {return new ActiveXObject('Msxml2.XMLHTTP');}
   catch (error) {}
-  try {return new ActiveXObject("Microsoft.XMLHTTP");}
+  try {return new ActiveXObject('Microsoft.XMLHTTP');}
   catch (error) {}
 
   throw new Error("Could not create HTTP request object.");
 }
 
 var request = makeHttpObject();
-request.open("GET", "/docs", false);
-request.setRequestHeader("Accept", "application/json");
+request.open('GET', window.location.pathname, false);
+request.setRequestHeader('Accept', 'application/json');
 request.send(null);
 document.write('<h3 style="margin-top: 50px">XHR results</h3>');
 document.write('<div>');
