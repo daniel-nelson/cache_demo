@@ -12,13 +12,16 @@ set :views, File.join(File.dirname(__FILE__), 'views')
 
 
 get "/:cache_visibility/:revalidate/:last_modified/:etag" do
-  if params[:last_modified] == 'check_last_modified'
+  now = Time.now
+  if params[:last_modified] == 'same_last_modified'
     last_modified(Time.rfc2822('Wed, 16 Jan 2013 20:52:56 GMT'))
+  elsif params[:last_modified] == 'different_last_modified'
+    last_modified(now)
   end
 
   if params[:age]
     headers('Age' => params[:age])
-    headers('Date' => CGI::rfc1123_date(Time.now))
+    headers('Date' => CGI::rfc1123_date(now))
   end
 
   if params[:revalidate] == 'must_revalidate'
@@ -31,16 +34,18 @@ get "/:cache_visibility/:revalidate/:last_modified/:etag" do
     etag('e9db93d4fb9cb8ba9f5a47f316edeec4')
 
   when 'different_etag'
-    etag(Time.now.to_i.to_s)
+    etag(now.to_i.to_s)
 
   when 'no_etag'
   end
   headers('Content-Type' => 'text/plain')
-  "#{params[:data]} #{Time.now.to_i.to_s}"
+  "#{params[:data]} #{now.to_i.to_s}"
 end
 
 get "/docs" do
   cache_control :private, :must_revalidate, :max_age => 0
+  # cache_control :no_cache
+  # cache_control :no_store
   headers('Vary' => 'Accept')
   if request.accept.include?('application/json')
     content_type :json
