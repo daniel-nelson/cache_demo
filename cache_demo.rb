@@ -13,15 +13,20 @@ set :views, File.join(File.dirname(__FILE__), 'views')
 
 get "/:cache_visibility/:revalidate/:last_modified/:etag" do
   now = Time.now
-  if params[:last_modified] == 'same_last_modified'
+
+  case params[:last_modified]
+  when 'same_last_modified'
     last_modified(Time.rfc2822('Wed, 16 Jan 2013 20:52:56 GMT'))
-  elsif params[:last_modified] == 'different_last_modified'
+  when'different_last_modified'
     last_modified(now)
   end
 
-  if params[:age]
-    headers('Age' => params[:age])
-    headers('Date' => CGI::rfc1123_date(now))
+  case params[:etag]
+  when 'same_etag'
+    etag('e9db93d4fb9cb8ba9f5a47f316edeec4')
+
+  when 'different_etag'
+    etag(now.to_i.to_s)
   end
 
   if params[:revalidate] == 'must_revalidate'
@@ -29,17 +34,14 @@ get "/:cache_visibility/:revalidate/:last_modified/:etag" do
   elsif params[:revalidate] == 'no_revalidate'
     cache_control params[:cache_visibility], :max_age => params[:max]
   end
-  case params[:etag]
-  when 'same_etag'
-    etag('e9db93d4fb9cb8ba9f5a47f316edeec4')
 
-  when 'different_etag'
-    etag(now.to_i.to_s)
-
-  when 'no_etag'
+  if params[:age]
+    headers('Age' => params[:age])
+    headers('Date' => CGI::rfc1123_date(now))
   end
-  headers('Content-Type' => 'text/plain')
-  "#{params[:data]} #{now.to_i.to_s}"
+
+  @request_url = request.url
+  erb :demo
 end
 
 get "/docs" do

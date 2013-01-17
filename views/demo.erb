@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Cache-Control Demo</title>
+  </head>
+
+  <body>
+
+    Path format:
+    <ol>
+      <li>public | private | no-cache | no-store</li>
+      <li>must_revalidate | no_revalidate</li>
+      <li>same_last_modified | different_last_modified | no_last_modified</li>
+      <li>same_etag | different_etag | no_etag</li>
+    </ol>
+    Options:
+    <ul>
+      <li>age (the current age as estimated by the server)</li>
+      <li>max (will be set as the max-age)</li>
+    </ul>
+
+    <p>
+      <a href="<%= @request_url %>"><%= @request_url %></a>
+    </p>
+
+    <p>
+      <%= Time.now.to_i.to_s %>
+    </p>
+  </body>
+</html>
