@@ -45,8 +45,8 @@ get "/:cache_visibility/:revalidate/:last_modified/:etag" do
   erb :demo
 end
 
-get "/docs" do
-  cache_control :private, :must_revalidate, :max_age => 0
+get "/docs/:cache_visibility" do
+  cache_control params[:cache_visibility], :must_revalidate, :max_age => 0
   # cache_control :no_cache
   # cache_control :no_store
   headers('Vary' => 'Accept')
