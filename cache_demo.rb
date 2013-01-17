@@ -29,7 +29,7 @@ get "/:cache_visibility/:revalidate/:etag" do
   when 'no_etag'
   end
   headers('Content-Type' => 'text/plain')
-  params[:data]
+  "#{params[:data]} #{Time.now.to_i.to_s}"
 end
 
 get "/docs" do
