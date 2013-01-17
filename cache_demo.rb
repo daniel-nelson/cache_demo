@@ -40,7 +40,8 @@ get "/:cache_visibility/:revalidate/:last_modified/:etag" do
     headers('Date' => CGI::rfc1123_date(now))
   end
 
-  @request_url = request.url
+  @request_url = request.path
+  @request_url << '?' + request.query_string unless request.query_string.empty?
   erb :demo
 end
 
