@@ -11,7 +11,7 @@ set :views, File.join(File.dirname(__FILE__), 'views')
 
 
 
-get "/:revalidation/:last_modified/:etag/:max" do
+get "/:revalidation/:last_modified/:etag/:max_age" do
   now = Time.now
 
   case params[:last_modified]
@@ -29,10 +29,10 @@ get "/:revalidation/:last_modified/:etag/:max" do
     etag(now.to_i.to_s)
   end
 
-  if params[:revalidation] == 'no_revalidation'
-    cache_control :public, :max_age => params[:max]
+  if params[:revalidation] == 'no_revalidate'
+    cache_control :public, :max_age => params[:max_age]
   else
-    cache_control :public, params[:revalidation], :max_age => params[:max]
+    cache_control :public, params[:revalidation].sub('_', '-'), :max_age => params[:max_age]
   end
 
   headers('Age' => '8')
@@ -45,10 +45,10 @@ end
 
 get "/docs/:revalidation" do
 
-  if params[:revalidation] == 'no_revalidation'
-    cache_control :private, :max_age => params[:max]
+  if params[:revalidation] == 'no_revalidate'
+    cache_control :private, :max_age => params[:max_age]
   else
-    cache_control :private, params[:revalidation], :max_age => params[:max]
+    cache_control :private, params[:revalidation].sub('_', '-'), :max_age => params[:max_age]
   end
 
   # cache_control :no_cache

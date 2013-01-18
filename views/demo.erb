@@ -9,16 +9,11 @@
 
     Path format:
     <ol>
-      <li>no_revalidate | must_revalidate | no-cache | no-store</li>
+      <li>no_revalidate | must_revalidate | no_cache | no_store</li>
       <li>no_last_modified | same_last_modified | different_last_modified</li>
       <li>no_etag | same_etag | different_etag</li>
-      <li>max-age (a number)</li>
+      <li>&lt;number&gt; (will be used as max-age)</li>
     </ol>
-    Options:
-    <ul>
-      <li>age (the current age as estimated by the server)</li>
-      <li>max (will be set as the max-age)</li>
-    </ul>
 
     <p>
       <a href="<%= @request_url %>"><%= @request_url %></a>
