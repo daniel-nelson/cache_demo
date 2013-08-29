@@ -16,7 +16,7 @@ get "/:revalidation/:last_modified/:etag/:max_age" do
 
   case params[:last_modified]
   when 'same_last_modified'
-    last_modified(Time.rfc2822('Wed, 16 Jan 2013 20:52:56 GMT'))
+    last_modified(Time.rfc2822('Wed, 30 Aug 2013 00:00:00 GMT'))
   when'different_last_modified'
     last_modified(now)
   end
@@ -34,9 +34,6 @@ get "/:revalidation/:last_modified/:etag/:max_age" do
   else
     cache_control :public, params[:revalidation].sub('_', '-'), :max_age => params[:max_age]
   end
-
-  headers('Age' => '8')
-  headers('Date' => CGI::rfc1123_date(now))
 
   @request_url = request.path
   @request_url << '?' + request.query_string unless request.query_string.empty?
